@@ -1302,6 +1302,12 @@ func (qa *QueryAggregators) GetAllColsInChainUpToFirstStatsBlock(cols map[string
 		// We want to stop after processing the first stats block
 		return
 	}
+	if qa.OutputTransforms != nil && qa.OutputTransforms.LetColumns != nil {
+		if qa.OutputTransforms.LetColumns.FormatResults != nil {
+			// Format command needs all columns
+			cols["*"] = struct{}{}
+		}
+	}
 
 	if qa.Next != nil {
 		qa.Next.GetAllColsInChainUpToFirstStatsBlock(cols)
@@ -1500,7 +1506,7 @@ func (c EvalFuncChecker) IsUnsupported(funcName string) bool {
 	return found
 }
 
-var unsupportedLetColumnCommands = []string{"FormatResults", "EventCountRequest"}
+var unsupportedLetColumnCommands = []string{"EventCountRequest"}
 
 func CheckUnsupportedFunctions(post *QueryAggregators) error {
 
@@ -1565,10 +1571,7 @@ func checkUnsupportedLetColumnCommand(agg *QueryAggregators) error {
 		letColumns := agg.OutputTransforms.LetColumns
 		for _, command := range unsupportedLetColumnCommands {
 			switch command {
-			case "FormatResults":
-				if letColumns.FormatResults != nil {
-					return fmt.Errorf("checkUnsupportedFunctions: using format command is not yet supported")
-				}
+
 			case "EventCountRequest":
 				if letColumns.EventCountRequest != nil {
 					return fmt.Errorf("checkUnsupportedFunctions: using eventcount command is not yet supported")
@@ -1737,4 +1740,10 @@ func StoreError(errorStore map[string]*SearchErrorInfo, errMsg string, logLevel 
 	}
 
 	return errorStore
+}
+
+// Implement the FieldGetter interface for FormatResultsRequest
+func (f *FormatResultsRequest) GetFields() []string {
+	// Format command needs to access all fields to properly format them
+	return []string{"*"}
 }

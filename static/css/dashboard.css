@@ -538,6 +538,15 @@
   z-index: 1;
   transform: none;
 }
+ /* SEARCH EXPRESSION */
+.search-expression {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background-color: #f5f5f5;
+    padding: 5px;
+    border-radius: 3px;
+    border-left: 3px solid #4caf50;
+}
 
 /* EMPTY-RESPONSE CSS FIX */
 .panelDisplay #empty-response,

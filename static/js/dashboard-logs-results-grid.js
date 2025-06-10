@@ -32,6 +32,21 @@ let panelLogsColumnDefs = [
         maxWidth: 250,
         minWidth: 250,
     },
+     {
+        field: 'search',
+        headerName: 'Search Expression',
+        cellRenderer: (params) => {
+            if (params.value) {
+                return `<div class="search-expression">${params.value}</div>`;
+            }
+            return '';
+        },
+        minWidth: 300,
+        flex: 2,
+        // Make the search column more visible
+        suppressSizeToFit: false,
+        resizable: true
+    },
     {
         field: 'logs',
         headerName: 'logs',
